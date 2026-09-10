@@ -1,0 +1,55 @@
+{% style %}
+  .trust-badges-{{ section.id }} {
+    padding: 15px 0;
+    text-align: center;
+    font-family: sans-serif;
+  }
+  .trust-badges-title {
+    font-size: 11px;
+    color: #666;
+    margin-bottom: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .badges-icons {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .badge-box {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #374151;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+{% endstyle %}
+
+<div class="trust-badges-{{ section.id }}">
+  <div class="trust-badges-title">{{ section.settings.title }}</div>
+  <div class="badges-icons">
+    <div class="badge-box">🔒 Pago 100% Seguro</div>
+    <div class="badge-box">💳 Visa / MC</div>
+    <div class="badge-box"> Pay</div>
+    <div class="badge-box">GPay</div>
+    <div class="badge-box">🛡️ SSL Encriptado</div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Sellos de Pago Seguro",
+  "settings": [
+    { "type": "text", "id": "title", "label": "Título superior", "default": "Garantía de Pago Seguro y Encriptado" }
+  ],
+  "presets": [{ "name": "Sellos de Pago Seguro" }]
+}
+{% endschema %}
