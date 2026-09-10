@@ -1,0 +1,110 @@
+{% style %}
+  .tiktok-section-{{ section.id }} {
+    padding: 50px 20px;
+    background: {{ section.settings.bg_color }};
+    font-family: sans-serif;
+    text-align: center;
+  }
+  .tiktok-title { font-size: 26px; font-weight: 800; margin-bottom: 8px; color: #111; }
+  .tiktok-sub { font-size: 14px; color: #666; margin-bottom: 30px; }
+  
+  .tiktok-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  .tiktok-card {
+    background: #111;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    aspect-ratio: 9/16;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+  }
+  .tiktok-card video, .tiktok-card img {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    object-fit: cover;
+    opacity: 0.85;
+  }
+  .tiktok-overlay {
+    position: relative;
+    z-index: 2;
+    padding: 15px;
+    background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+    text-align: left;
+    color: white;
+  }
+  .tiktok-user { font-size: 13px; font-weight: bold; margin-bottom: 5px; display: block; color: #fff; }
+  .tiktok-caption { font-size: 12px; line-height: 1.4; margin-bottom: 10px; opacity: 0.9; }
+  .tiktok-stats { display: flex; justify-content: space-between; font-size: 11px; opacity: 0.8; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 8px; }
+{% endstyle %}
+
+<div class="tiktok-section-{{ section.id }}">
+  <h2 class="tiktok-title">{{ section.settings.title }}</h2>
+  <p class="tiktok-sub">{{ section.settings.subtitle }}</p>
+
+  <div class="tiktok-grid">
+    {% for block in section.blocks %}
+      <div class="tiktok-card" {{ block.shopify_attributes }}>
+        {% if block.settings.video %}
+          {{ block.settings.video | video_tag: autoplay: true, loop: true, muted: true, controls: false }}
+        {% elsif block.settings.image %}
+          <img src="{{ block.settings.image | img_url: 'master' }}" alt="TikTok video">
+        {% else %}
+          <div style="background:#222; width:100%; height:100%;"></div>
+        {% endif %}
+
+        <div class="tiktok-overlay">
+          <span class="tiktok-user">@{{ block.settings.username }}</span>
+          <p class="tiktok-caption">{{ block.settings.caption }}</p>
+          <div class="tiktok-stats">
+            <span>❤️ {{ block.settings.likes }}</span>
+            <span>💬 {{ block.settings.comments }}</span>
+            <span>↗ Compartir</span>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Viral en TikTok Grid",
+  "settings": [
+    { "type": "color", "id": "bg_color", "label": "Color de fondo", "default": "#0f172a" },
+    { "type": "text", "id": "title", "label": "Título", "default": "Viral en TikTok" },
+    { "type": "text", "id": "subtitle", "label": "Subtítulo", "default": "Mira por qué todo el mundo está obsesionado. Desliza para ver más." }
+  ],
+  "blocks": [
+    {
+      "type": "video_item",
+      "name": "Video TikTok",
+      "settings": [
+        { "type": "text", "id": "username", "label": "Usuario", "default": "valeria.tips" },
+        { "type": "textarea", "id": "caption", "label": "Descripción", "default": "¡Chicas! Llevo 2 semanas usando esto y es magia pura ✨ #skincare" },
+        { "type": "text", "id": "likes", "label": "Me gusta", "default": "14.3K" },
+        { "type": "text", "id": "comments", "label": "Comentarios", "default": "342" },
+        { "type": "video", "id": "video", "label": "Video MP4" },
+        { "type": "image_picker", "id": "image", "label": "Imagen de respaldo (si no hay video)" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Viral en TikTok Grid",
+      "blocks": [
+        { "type": "video_item" },
+        { "type": "video_item" },
+        { "type": "video_item" }
+      ]
+    }
+  ]
+}
+{% endschema %}
