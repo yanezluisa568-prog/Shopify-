@@ -1,0 +1,159 @@
+{% style %}
+  .reviews-section-{{ section.id }} {
+    padding: 50px 20px;
+    background-color: {{ section.settings.bg_color }};
+    font-family: sans-serif;
+    text-align: center;
+  }
+  .reviews-title {
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 15px;
+    color: #333;
+  }
+  .global-rating {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 5px;
+  }
+  .global-score {
+    font-size: 32px;
+    font-weight: 900;
+    color: #333;
+  }
+  .global-stars {
+    color: #eab308;
+    font-size: 22px;
+    letter-spacing: 2px;
+  }
+  .reviews-subtitle {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 40px;
+    font-weight: 600;
+  }
+  .reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+    text-align: left;
+  }
+  .review-card {
+    background: #ffffff;
+    border: 1px solid #eaeaea;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+  }
+  .review-stars {
+    color: #eab308;
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+  .review-text {
+    font-size: 15px;
+    color: #444;
+    line-height: 1.5;
+    margin-bottom: 20px;
+    font-style: italic;
+  }
+  .review-author-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .review-avatar {
+    width: 40px;
+    height: 40px;
+    background: #ff4d6d;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 18px;
+  }
+  .review-info {
+    display: flex;
+    flex-direction: column;
+  }
+  .review-name {
+    font-weight: bold;
+    font-size: 14px;
+    color: #333;
+  }
+  .review-verified {
+    font-size: 11px;
+    color: #16a34a;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+{% endstyle %}
+
+<div class="reviews-section-{{ section.id }}">
+  <h2 class="reviews-title">{{ section.settings.title }}</h2>
+  
+  <div class="global-rating">
+    <span class="global-score">{{ section.settings.global_score }}</span>
+    <span class="global-stars">★★★★★</span>
+  </div>
+  <p class="reviews-subtitle">{{ section.settings.subtitle }}</p>
+
+  <div class="reviews-grid">
+    {% for block in section.blocks %}
+      <div class="review-card" {{ block.shopify_attributes }}>
+        <div class="review-stars">
+          {% assign rating = block.settings.rating | times: 1 %}
+          {% for i in (1..rating) %}★{% endfor %}
+        </div>
+        
+        <p class="review-text">"{{ block.settings.text }}"</p>
+        
+        <div class="review-author-area">
+          <div class="review-avatar">
+            {{ block.settings.author | slice: 0 }}
+          </div>
+          <div class="review-info">
+            <span class="review-name">{{ block.settings.author }}</span>
+            <span class="review-verified">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+              {{ block.settings.verified_text }}
+            </span>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Resultados y Reseñas",
+  "settings": [
+    { "type": "color", "id": "bg_color", "label": "Color de fondo", "default": "#fafafa" },
+    { "type": "text", "id": "title", "label": "Título Principal", "default": "Resultados Reales" },
+    { "type": "text", "id": "global_score", "label": "Calificación Global", "default": "4.9" },
+    { "type": "text", "id": "subtitle", "label": "Texto de reseñas totales", "default": "Basado en 13,456 reseñas verificadas" }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Testimonio",
+      "settings": [
+        { "type": "range", "id": "rating", "min": 1, "max": 5, "step": 1, "label": "Estrellas", "default": 5 },
+        { "type": "textarea", "id": "text", "label": "Texto del testimonio", "default": "Sinceramente era escéptica, pero funciona EXACTAMENTE como dicen en TikTok." },
+        { "type": "text", "id": "author", "label": "Nombre del cliente", "default": "Sofía M." },
+        { "type": "text", "id": "verified_text", "label": "Texto de compra verificada", "default": "Comprador Verificado" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Resultados y Reseñas", "blocks": [ { "type": "review" }, { "type": "review" }, { "type": "review" } ] }]
+}
+{% endschema %}
