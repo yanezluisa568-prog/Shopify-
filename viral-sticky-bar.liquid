@@ -1,0 +1,46 @@
+{% style %}
+  .sticky-bar-{{ section.id }} {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: white;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 999;
+    font-family: sans-serif;
+  }
+  .sticky-price { display: flex; flex-direction: column; }
+  .sticky-price span { font-size: 12px; color: #777; font-weight: bold; text-transform: uppercase; }
+  .sticky-price strong { font-size: 22px; color: #ff4d6d; font-weight: 900; }
+  .sticky-btn { background: #ff4d6d; color: white; border: none; padding: 12px 30px; font-size: 16px; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; }
+  body { padding-bottom: 80px; }
+{% endstyle %}
+
+{% if section.settings.show_sticky %}
+<div class="sticky-bar-{{ section.id }}">
+  <div class="sticky-price">
+    <span>{{ section.settings.total_text }}</span>
+    <strong>{{ section.settings.price }}</strong>
+  </div>
+  <button class="sticky-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'});">
+    {{ section.settings.btn_text }}
+  </button>
+</div>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Barra Inferior Fija",
+  "settings": [
+    { "type": "checkbox", "id": "show_sticky", "label": "Activar Barra Flotante", "default": true },
+    { "type": "text", "id": "total_text", "label": "Texto Superior", "default": "TOTAL" },
+    { "type": "text", "id": "price", "label": "Precio a Mostrar", "default": "$44.99" },
+    { "type": "text", "id": "btn_text", "label": "Texto del Botón", "default": "COMPRAR AHORA" }
+  ],
+  "presets": [{ "name": "Barra Inferior Fija" }]
+}
+{% endschema %}
