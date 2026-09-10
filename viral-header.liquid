@@ -1,0 +1,55 @@
+{% style %}
+  .viral-header-{{ section.id }} { width: 100%; font-family: sans-serif; }
+  .vh-promo { background: {{ section.settings.promo_bg }}; color: {{ section.settings.promo_text }}; text-align: center; padding: 8px 10px; font-size: 13px; font-weight: bold; display: flex; justify-content: center; align-items: center; gap: 10px; }
+  .vh-timer { background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 4px; letter-spacing: 1px; }
+  .vh-shipping { background: {{ section.settings.shipping_bg }}; color: {{ section.settings.shipping_text }}; padding: 6px; font-size: 11px; font-weight: bold; display: flex; justify-content: space-between; text-transform: uppercase; }
+  .vh-shipping span { display: flex; align-items: center; gap: 5px; }
+{% endstyle %}
+
+<div class="viral-header-{{ section.id }}">
+  {% if section.settings.show_timer %}
+    <div class="vh-promo">
+      <span>{{ section.settings.promo_msg }}</span>
+      <span class="vh-timer" id="vh-timer-{{ section.id }}" data-time="{{ section.settings.end_time }}">00:00:00</span>
+    </div>
+  {% endif %}
+  <div class="vh-shipping">
+    <span>📦 {{ section.settings.shipping_msg }}</span>
+    <span>⭐ {{ section.settings.trust_msg }}</span>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const timer = document.getElementById('vh-timer-{{ section.id }}');
+    if(!timer) return;
+    const target = new Date(timer.getAttribute('data-time')).getTime();
+    setInterval(() => {
+      const now = new Date().getTime();
+      const dist = target - now;
+      if (dist < 0) { timer.innerHTML = "00:00:00"; return; }
+      const h = Math.floor((dist % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const m = Math.floor((dist % (1000 * 60 * 60)) / (1000 * 60));
+      const s = Math.floor((dist % (1000 * 60)) / 1000);
+      timer.innerHTML = `${h<10?'0'+h:h}:${m<10?'0'+m:m}:${s<10?'0'+s:s}`;
+    }, 1000);
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Barra Promo + Timer",
+  "settings": [
+    { "type": "checkbox", "id": "show_timer", "label": "Mostrar Temporizador", "default": true },
+    { "type": "text", "id": "promo_msg", "label": "Mensaje Promo", "default": "🚨 OFERTA DE VERANO - HASTA 60% OFF" },
+    { "type": "text", "id": "end_time", "label": "Fecha Fin (YYYY-MM-DDTHH:MM:SS)", "default": "2026-12-31T23:59:00" },
+    { "type": "color", "id": "promo_bg", "label": "Fondo Promo", "default": "#ff4d6d" },
+    { "type": "color", "id": "promo_text", "label": "Texto Promo", "default": "#ffffff" },
+    { "type": "text", "id": "shipping_msg", "label": "Mensaje Envío", "default": "ENVÍO GRATIS A TODO EL PAÍS" },
+    { "type": "text", "id": "trust_msg", "label": "Mensaje Confianza", "default": "MÁS DE 50,000 CLIENTES SATISFECHOS" },
+    { "type": "color", "id": "shipping_bg", "label": "Fondo Secundario", "default": "#000000" },
+    { "type": "color", "id": "shipping_text", "label": "Texto Secundario", "default": "#ffffff" }
+  ],
+  "presets": [{ "name": "Barra Promo + Timer" }]
+}
+{% endschema %}
