@@ -1,0 +1,105 @@
+{% style %}
+  .faq-section-{{ section.id }} {
+    padding: 50px 20px;
+    background: {{ section.settings.bg_color }};
+    font-family: sans-serif;
+  }
+  .faq-container {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  .faq-title {
+    text-align: center;
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 30px;
+    color: #222;
+  }
+  .faq-item {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+  }
+  .faq-item details {
+    width: 100%;
+  }
+  .faq-item summary {
+    padding: 18px 20px;
+    font-weight: bold;
+    font-size: 16px;
+    color: #1f2937;
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary::after {
+    content: '+';
+    font-size: 22px;
+    color: #ff4d6d;
+    font-weight: normal;
+    transition: transform 0.2s;
+  }
+  .faq-item details[open] summary::after {
+    transform: rotate(45deg);
+  }
+  .faq-answer {
+    padding: 0 20px 20px 20px;
+    color: #4b5563;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+{% endstyle %}
+
+<div class="faq-section-{{ section.id }}">
+  <div class="faq-container">
+    <h2 class="faq-title">{{ section.settings.title }}</h2>
+    
+    {% for block in section.blocks %}
+      <div class="faq-item" {{ block.shopify_attributes }}>
+        <details>
+          <summary>{{ block.settings.question }}</summary>
+          <div class="faq-answer">
+            <p>{{ block.settings.answer }}</p>
+          </div>
+        </details>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Preguntas Frecuentes FAQ",
+  "settings": [
+    { "type": "color", "id": "bg_color", "label": "Color de fondo", "default": "#fafafa" },
+    { "type": "text", "id": "title", "label": "Título", "default": "Preguntas Frecuentes" }
+  ],
+  "blocks": [
+    {
+      "type": "faq_item",
+      "name": "Pregunta y Respuesta",
+      "settings": [
+        { "type": "text", "id": "question", "label": "Pregunta", "default": "¿Duele al utilizarlo?" },
+        { "type": "textarea", "id": "answer", "label": "Respuesta", "default": "Para nada. Utiliza tecnología nanocristalina que exfolia suavemente sin causar dolor, cortadas ni irritación." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Preguntas Frecuentes FAQ",
+      "blocks": [
+        { "type": "faq_item" },
+        { "type": "faq_item" },
+        { "type": "faq_item" },
+        { "type": "faq_item" }
+      ]
+    }
+  ]
+}
+{% endschema %}
