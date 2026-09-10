@@ -1,0 +1,55 @@
+{% style %}
+  .marquee-{{ section.id }} {
+    background: {{ section.settings.bg_color }};
+    color: {{ section.settings.text_color }};
+    padding: 12px 0;
+    overflow: hidden;
+    white-space: nowrap;
+    font-family: sans-serif;
+    font-weight: bold;
+    font-size: 14px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    display: flex;
+  }
+  .marquee-track {
+    display: flex;
+    gap: 40px;
+    animation: marqueeScroll 20s linear infinite;
+  }
+  .marquee-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  @keyframes marqueeScroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+{% endstyle %}
+
+<div class="marquee-{{ section.id }}">
+  <div class="marquee-track">
+    {% for i in (1..4) %}
+      <div class="marquee-item"><span>{{ section.settings.text_1 }}</span> ✦</div>
+      <div class="marquee-item"><span>{{ section.settings.text_2 }}</span> ✦</div>
+      <div class="marquee-item"><span>{{ section.settings.text_3 }}</span> ✦</div>
+    {% endfor %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Cinta Divisora Animada",
+  "settings": [
+    { "type": "color", "id": "bg_color", "label": "Color de fondo", "default": "#111111" },
+    { "type": "color", "id": "text_color", "label": "Color de texto", "default": "#ffffff" },
+    { "type": "text", "id": "text_1", "label": "Texto 1", "default": "⚡ 100% LIBRE DE DOLOR" },
+    { "type": "text", "id": "text_2", "label": "Texto 2", "default": "🛡️ GARANTÍA DE 30 DÍAS" },
+    { "type": "text", "id": "text_3", "label": "Texto 3", "default": "📦 ENVÍO GRATIS A TODO EL PAÍS" }
+  ],
+  "presets": [
+    { "name": "Cinta Divisora Animada" }
+  ]
+}
+{% endschema %}
