@@ -1,0 +1,91 @@
+{% style %}
+  .live-popup-{{ section.id }} {
+    position: fixed;
+    bottom: 90px;
+    left: 20px;
+    background: white;
+    padding: 12px 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 998;
+    font-family: sans-serif;
+    max-width: 300px;
+    border-left: 4px solid #ff4d6d;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    opacity: 0;
+    transform: translateY(20px);
+    pointer-events: none;
+  }
+  .live-popup-{{ section.id }}.show {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+  .live-popup-icon {
+    font-size: 24px;
+  }
+  .live-popup-text {
+    font-size: 13px;
+    color: #333;
+    line-height: 1.4;
+  }
+  .live-popup-text strong {
+    color: #111;
+  }
+  .live-popup-time {
+    font-size: 10px;
+    color: #888;
+    margin-top: 2px;
+    display: block;
+  }
+{% endstyle %}
+
+<div class="live-popup-{{ section.id }}" id="fomo-popup-{{ section.id }}">
+  <div class="live-popup-icon">🛍️</div>
+  <div class="live-popup-text">
+    <span id="fomo-content-{{ section.id }}"><strong>Sofía (Madrid)</strong> compró 2x Borradores</span>
+    <span class="live-popup-time">Hace un momento</span>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const popup = document.getElementById('fomo-popup-{{ section.id }}');
+    const content = document.getElementById('fomo-content-{{ section.id }}');
+    if(!popup) return;
+
+    const buyers = [
+      {name: "Sofía (Madrid)", item: "2x Borradores de Vello"},
+      {name: "Lucía (Barcelona)", item: "1x Borrador de Vello"},
+      {name: "Carla (Valencia)", item: "3x Borradores (Pack ahorro)"},
+      {name: "María (Sevilla)", item: "2x Borradores de Vello"},
+      {name: "Elena (Bilbao)", item: "1x Borrador de Vello"}
+    ];
+
+    function showPopup() {
+      const randomBuyer = buyers[Math.floor(Math.random() * buyers.length)];
+      content.innerHTML = `<strong>${randomBuyer.name}</strong> compró ${randomBuyer.item}`;
+      popup.classList.add('show');
+
+      setTimeout(() => {
+        popup.classList.remove('show');
+      }, 4000);
+    }
+
+    setTimeout(showPopup, 5000);
+    setInterval(showPopup, 14000);
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Notificaciones de Compra",
+  "settings": [
+    { "type": "paragraph", "content": "Muestra notificaciones flotantes de clientes comprando en tiempo real para generar urgencia." }
+  ],
+  "presets": [{ "name": "Notificaciones de Compra" }]
+}
+{% endschema %}
