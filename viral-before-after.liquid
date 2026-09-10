@@ -1,0 +1,156 @@
+{% style %}
+  .ba-section-{{ section.id }} { 
+    padding: 40px 20px; 
+    text-align: center; 
+    font-family: sans-serif; 
+    background: {{ section.settings.bg_color }}; 
+  }
+  .ba-title { font-size: 24px; font-weight: bold; margin-bottom: 10px; }
+  .ba-subtitle { color: #666; margin-bottom: 30px; font-size: 15px; }
+  
+  .ba-container {
+    position: relative;
+    max-width: 600px;
+    margin: 0 auto;
+    border-radius: 12px;
+    overflow: hidden;
+    aspect-ratio: 4/3;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  }
+  
+  .ba-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+  }
+  
+  .ba-img-before {
+    clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%);
+    z-index: 2;
+  }
+  .ba-img-after { z-index: 1; }
+
+  .ba-label {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 5px 15px;
+    background: rgba(255,255,255,0.8);
+    color: #ff4d6d;
+    font-weight: 900;
+    font-size: 18px;
+    border-radius: 4px;
+    letter-spacing: 1px;
+    z-index: 3;
+  }
+  .ba-label-before { left: 10%; }
+  .ba-label-after { right: 10%; color: #333; }
+
+  .ba-slider-input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: ew-resize;
+    z-index: 10;
+  }
+
+  .ba-handle {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 4px;
+    height: 100%;
+    background: white;
+    transform: translateX(-50%);
+    pointer-events: none;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .ba-handle-btn {
+    width: 36px;
+    height: 36px;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .ba-handle-btn::after {
+    content: '↔';
+    color: #ff4d6d;
+    font-weight: bold;
+    font-size: 18px;
+  }
+{% endstyle %}
+
+<div class="ba-section-{{ section.id }}">
+  <h2 class="ba-title">{{ section.settings.title }}</h2>
+  <p class="ba-subtitle">{{ section.settings.subtitle }}</p>
+
+  <div class="ba-container">
+    {% if section.settings.image_after %}
+      <img src="{{ section.settings.image_after | img_url: 'master' }}" class="ba-img ba-img-after" alt="Después">
+    {% else %}
+      <div class="ba-img ba-img-after" style="background:#f4f4f4; display:flex; align-items:center; justify-content:center;">Sube imagen "Después"</div>
+    {% endif %}
+
+    {% if section.settings.image_before %}
+      <img src="{{ section.settings.image_before | img_url: 'master' }}" class="ba-img ba-img-before" id="img-before-{{ section.id }}" alt="Antes">
+    {% else %}
+      <div class="ba-img ba-img-before" id="img-before-{{ section.id }}" style="background:#e2e2e2; display:flex; align-items:center; justify-content:center;">Sube imagen "Antes"</div>
+    {% endif %}
+
+    <div class="ba-label ba-label-before">{{ section.settings.label_before }}</div>
+    <div class="ba-label ba-label-after">{{ section.settings.label_after }}</div>
+
+    <div class="ba-handle" id="handle-{{ section.id }}">
+      <div class="ba-handle-btn"></div>
+    </div>
+
+    <input type="range" min="0" max="100" value="50" class="ba-slider-input" id="slider-{{ section.id }}">
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const slider = document.getElementById('slider-{{ section.id }}');
+    const imgBefore = document.getElementById('img-before-{{ section.id }}');
+    const handle = document.getElementById('handle-{{ section.id }}');
+
+    if (slider && imgBefore && handle) {
+      slider.addEventListener('input', function(e) {
+        const sliderValue = e.target.value;
+        imgBefore.style.clipPath = `polygon(0 0, ${sliderValue}% 0, ${sliderValue}% 100%, 0 100%)`;
+        handle.style.left = `${sliderValue}%`;
+      });
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Antes y Después Slider",
+  "settings": [
+    { "type": "color", "id": "bg_color", "label": "Color de fondo", "default": "#fafafa" },
+    { "type": "text", "id": "title", "label": "Título", "default": "Resultados Increíbles" },
+    { "type": "text", "id": "subtitle", "label": "Subtítulo", "default": "Desliza para ver la magia. Piel suave y sin irritación en segundos." },
+    { "type": "header", "content": "Configuración de Imágenes" },
+    { "type": "image_picker", "id": "image_before", "label": "Imagen: ANTES" },
+    { "type": "image_picker", "id": "image_after", "label": "Imagen: DESPUÉS" },
+    { "type": "text", "id": "label_before", "label": "Etiqueta izquierda", "default": "ANTES" },
+    { "type": "text", "id": "label_after", "label": "Etiqueta derecha", "default": "DESPUÉS" }
+  ],
+  "presets": [{ "name": "Antes y Después Slider" }]
+}
+{% endschema %}
